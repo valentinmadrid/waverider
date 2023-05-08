@@ -19,8 +19,6 @@ Walktrough of Waverider streaming deserialized account data to a Supabase instan
 
 https://user-images.githubusercontent.com/94240868/236879119-5b4f104d-9741-46bc-803a-2865e54a63cd.mp4
 
-
-
 ## Getting started
 
 ### Clone Waverider
@@ -42,7 +40,7 @@ yarn build-default
 
 This plugin works with every PostgREST Server, although i recommend you set up a Supabase instance. They have a generous free tier, but can also be self hosted for completely free.
 
-Take the SQL Script at [config/default.sql]() and run it in your database, either via the CLI or a GUI(Supabase web GUI).
+Take the SQL Script at [config/default.sql](https://github.com/nautilus-project/waverider/blob/main/config/default.sql) and run it in your database, either via the CLI or a GUI(Supabase web GUI).
 
 3. __Fill the configuration file__
 
@@ -64,9 +62,11 @@ Fill out these fields:
 
 We'll use a local validator for this example, but this can be attached to a main/test/devnet validator.
 
-For mac users, run: `solana-test-validator --geyser-plugin-config config.default.mac.json`.
+⚠️ Important: You HAVE to run the Solana Toolsuite (CLI) with the same version as this scripts Plugin Interface(view in Cargo.toml), and need to run the Plugin with the same Rust version you have built your Solana Toolsuite.
 
-For Linux/Windows users, run: `solana-test-validator --geyser-plugin-config config.default.json`.
+For mac users, run: `solana-test-validator --geyser-plugin-config config/config.default.mac.json`.
+
+For Linux/Windows users, run: `solana-test-validator --geyser-plugin-config config/config.default.json`.
 
 ### Running the atlantic Plugin
 
