@@ -1,9 +1,11 @@
 use postgrest::Postgrest;
 use serde::Deserialize;
+use serde_json::{Value, Map};
 use solana_geyser_plugin_interface::geyser_plugin_interface::GeyserPluginError;
 use solana_geyser_plugin_interface::geyser_plugin_interface::{
     GeyserPlugin, ReplicaAccountInfoVersions, Result as PluginResult,
 };
+use std::io::Cursor;
 use std::{
     error::Error,
     fmt::{self, Debug},
@@ -11,6 +13,8 @@ use std::{
     io::Read,
 };
 use tokio::runtime::Runtime;
+use anchor_lang::{AnchorDeserialize, AnchorSerialize};
+use serde::{Serialize};
 
 pub struct SupabasePlugin {
     postgres_client: Option<Postgrest>,
@@ -106,25 +110,88 @@ impl GeyserPlugin for SupabasePlugin {
                 let account_lamports = account_info.lamports;
                 let account_executable = account_info.executable;
                 let account_rent_epoch = account_info.rent_epoch;
+                if account_data.len() > 9 {
+      
+                let mut data = &account_data[8..];
+               
+                let mut new_account = None;
+                match NewAccount::deserialize(&mut data) {
+                    Ok(account) => {
+                        // Successfully deserialized `data` into a `NewAccount` instance.
+                        // Set `new_account` to the created object.
+                        new_account = Some(account);
                 
+                        // Do something with `new_account` here.
+                    },
+                    Err(error) => {
+                        // An error occurred during deserialization.
+                        // Set `new_account` to `None`.
+                     
+                
+                        // Handle the error here.
+                        println!("Error: {}", error);
+                        // You can also choose to return an error or panic here, depending on your use case.
+                    }
+                }
+                let mut testdata: &NewAccount = &NewAccount { age: 0, name: String::from(""), country: String::from("")};
+                if let Some(unwrapped) = &new_account {
+                    // This block will only execute if new_account is Some(value), and unwrapped will be a reference to the value
+                    println!("Unwrapped value: {:?}", unwrapped);
+                    testdata = unwrapped;
+                }
+                println!("Unwrapped value 2s: {:?}", testdata);
+                
+            let string = serde_json::to_string(&testdata).unwrap();
+            let json_array = format!("[{}]", string);
+let upsert_data = json_array.as_str();
+                println!("Unwrapped value 2s: {:?}", upsert_data);
+let base_account_string = serde_json::to_string(
+    &serde_json::json!({ "account": account_pubkey, "owner": account_owner, "data": account_data, "executable": account_executable }) 
+)
+.unwrap();
 
+println!("Unwrapped BASE ACCOUNT: {:?}", base_account_string);
+
+let mut value1: Value = serde_json::from_str(base_account_string.as_str()).unwrap();
+let value2: Value = serde_json::from_str(string.as_str()).unwrap();
+let object1_map: &mut Map<String, Value> = value1.as_object_mut().unwrap();
+for (key, value) in value2.as_object().unwrap().iter() {
+    object1_map.insert(key.clone(), value.clone());
+}
+let string = serde_json::to_string(&value1).unwrap();
+                let request_string = format!("[{}{}]", base_account_string, string);
+
+                println!("Request string {:?}", string);
+                
                 let rt = Runtime::new().unwrap();
+                // map the new_account data to json
+            
                 let result = rt.block_on(
                     self.postgres_client
                         .as_mut()
                         .unwrap()
                         .from("accounts")
-                        .upsert(
-                            serde_json::to_string(
-                                &serde_json::json!([{ "account": account_pubkey, "owner": account_owner, "data": account_data, "executable": account_executable }]),
-                            )
-                            .unwrap(),
-                        )
-                        .execute(),
+                        .upsert(string)
+                        .execute()
                 );
-                println!("result: {:#?}, startup: {:#?}", result, is_startup);
+
+                println!("Result: {:?}", result);
+/* 
+                let result2 = rt.block_on(
+                    self.postgres_client
+                        .as_mut()
+                        .unwrap()
+                        .from("accounts")
+                        .upsert(string)
+                        .execute()
+                );
+
+                println!("Result 2: {:?}", result2);
+*/
+            
             } else {
             }
+        }
         });
 
         Ok(())
@@ -149,4 +216,11 @@ impl Debug for SupabasePlugin {
             .field("postgres_client", &self.postgres_client.is_some())
             .finish()
     }
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Debug, Serialize)]
+pub struct NewAccount {
+    age: u32,
+    name: String,
+    country: String,
 }

@@ -1,0 +1,9 @@
+{
+    "name": "waverider",
+    "version": "0.0.3",
+    "scripts": {
+      "build-default": "cargo build --manifest-path waverider/default/Cargo.toml --release",
+      "build-atlantic": "cargo build --manifest-path waverider/atlantic/Cargo.toml --release"
+    }
+  }
+  
