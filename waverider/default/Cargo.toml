@@ -1,6 +1,6 @@
 [package]
-name = "Waverider"
-version = "0.0.2"
+name = "waverider_default"
+version = "0.0.3"
 edition = "2021"
 
 [lib]

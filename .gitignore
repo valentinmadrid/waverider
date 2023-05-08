@@ -1,4 +1,4 @@
 /target
 /Cargo.lock
 test-ledger/
-config.json
+config/config.json

@@ -1,5 +1,5 @@
 {
-  "libpath": "target/debug/libgeyser.so",
+  "libpath": "../waverider/default/target/release/libwaverider_default.dylib",
   "supabase_url": "<url>/rest/v1",
   "supabase_key": "<key>",
   "programs": ["TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"]
