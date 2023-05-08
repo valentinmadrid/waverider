@@ -17,6 +17,9 @@ The difference between the two is that atlantic is also built to stream deserial
 
 Walktrough of Waverider streaming deserialized account data to a Supabase instance.
 
+https://user-images.githubusercontent.com/94240868/236879119-5b4f104d-9741-46bc-803a-2865e54a63cd.mp4
+
+
 
 ## Getting started
 
