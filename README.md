@@ -42,6 +42,8 @@ This plugin works with every PostgREST Server, although i recommend you set up a
 
 Take the SQL Script at [config/default.sql](https://github.com/nautilus-project/waverider/blob/main/config/default.sql) and run it in your database, either via the CLI or a GUI(Supabase web GUI).
 
+If you are using Supabase, also make sure to turn off Row Level Security for the accounts table, you can do this via the UI.
+
 3. __Fill the configuration file__
 
 If you are a mac user, open `config/config.default.mac.json`. If you are on Windows or Linux, open `config/config.default.json`.
